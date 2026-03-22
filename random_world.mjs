@@ -2,7 +2,7 @@
 /** @import * as AntByte from "../lib" AntByte */
 
 import { writeFileSync } from 'fs'
-import { run, size, newWorld, events, randomInt } from "../lib.mjs"
+import { run, size, newWorld, events, randomInt } from "../antbyte-js/lib.mjs"
 
 const KEEP_FILES = false;
 
