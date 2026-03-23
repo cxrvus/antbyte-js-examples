@@ -1,6 +1,6 @@
 // @ts-check
 
-import { ant, run } from "../js/lib.mjs"
+import { ant, run } from "../antbyte-js/lib.mjs"
 
 run({
 	cfg: {
