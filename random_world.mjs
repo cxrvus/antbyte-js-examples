@@ -1,5 +1,5 @@
 // @ts-check
-/** @import * as AntByte from "../lib" AntByte */
+/** @import * as AntByte from "../antbyte-js/lib" AntByte */
 
 import { writeFileSync } from 'fs'
 import { run, size, newWorld, events, randomInt } from "../antbyte-js/lib.mjs"
@@ -80,7 +80,7 @@ world.cfg = { ...size(128), speed: 2, fps: 12 }
 if (KEEP_FILES) {
 	const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-').replace('T', '-')
 	const dirname = import.meta.dirname;
-	writeFileSync(`${dirname}/../../tmp/random_world-${timestamp}.ant.json`, JSON.stringify(world), 'utf-8')
+	writeFileSync(`${dirname}/tmp/random_world-${timestamp}.ant.json`, JSON.stringify(world), 'utf-8')
 }
 
 run(world)
