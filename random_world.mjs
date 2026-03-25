@@ -10,7 +10,7 @@ const KEEP_FILES = false;
 function generateWorld() {
 	const world = newWorld()
 
-	const antCount = randomInt(16) + 5
+	const antCount = randomInt(12) + 6
 
 	for (let i = 1; i <= antCount; i++) {
 		world.ants[i] = generateAnt(i)
@@ -23,15 +23,15 @@ function generateWorld() {
 function generateAnt(index) {
 	// todo: just pass probability object
 	// manual tweaking...
-	const mandatoryInputs = ['T6', 'T7']
-	const blockedInputs = [...['R4', 'R5', 'R6', 'R7'], ...mandatoryInputs]
+	const mandatoryInputs = ['AC', 'E3', 'E2', 'E1', 'E0']
+	const blockedInputs = [...['R4', 'R5', 'R6', 'R7', 'E4', 'E5', 'E6', 'E7',  'K7', 'K6', 'K5', 'K4', 'K3', 'K2', 'K1', 'K0' ], ...mandatoryInputs]
 	const filteredInputs = events.input.filter(p => !blockedInputs.includes(p))
-	const mandatoryOutputs = ['A0', 'A1', 'AK', 'D0', 'DX']
-	const blockedOutputs = [...['A4', 'A5', 'A6', 'A7'], ...mandatoryOutputs]
+	const mandatoryOutputs = ['A1', 'D0', 'DX', 'ES3', 'ES2', 'ES1', 'ES0']
+	const blockedOutputs = [...['A4', 'A5', 'A6', 'A7', 'ES4', 'ES5', 'ES6', 'ES7'], ...mandatoryOutputs]
 	const filteredOutputs = events.output.filter(p => !blockedOutputs.includes(p))
 	//
 
-	let inputs = getSubset(filteredInputs, randomInt(4) + 2);
+	let inputs = getSubset(filteredInputs, randomInt(4) + 0);
 	let outputs = getSubset(filteredOutputs, randomInt(4) + 4);
 
 	// todo: automate
@@ -75,7 +75,8 @@ function getSubset(superSet, amount) {
 
 const world = generateWorld()
 
-world.cfg = { ...size(128), speed: 2, fps: 12 }
+world.cfg = { ...size(128), speed: 12, fps: 12, decay: 100, ant_limit: 100 }
+// world.cfg.keys = "asdfghj"
 
 if (KEEP_FILES) {
 	const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-').replace('T', '-')
