@@ -12,7 +12,7 @@ function generateWorld() {
 
 	const antCount = randomInt(12) + 6
 
-	for (let i = 1; i <= antCount; i++) {
+	for (let i = 1; i <= antCount-1; i++) {
 		world.ants[i] = generateAnt(i)
 	}
 
