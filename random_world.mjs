@@ -58,19 +58,16 @@ function generateAnt(index) {
 
 /** @param {string[]} superSet @param {number} amount @returns {string[]} */
 function getSubset(superSet, amount) {
-	const set = [...superSet]
-	/** @type {string[]} */
-	const subset = [];
-	let setSize = set.length;
+	const pool = [...new Set(superSet)];
+	const count = Math.max(0, Math.min(Math.trunc(amount), pool.length));
 
-	while (subset.length < amount) {
-		const index = randomInt(setSize);
-		subset.push(set[index]);
-		set.splice(index, 1);
-		setSize--;
+	// Fisher-Yates shuffle
+	for (let i = 0; i < count; i++) {
+		const j = i + randomInt(pool.length - i);
+		[pool[i], pool[j]] = [pool[j], pool[i]];
 	}
 
-	return subset
+	return pool.slice(0, count);
 }
 
 const world = generateWorld()
