@@ -23,11 +23,11 @@ function generateWorld() {
 function generateAnt(index) {
 	// todo: just pass probability object
 	// manual tweaking...
-	const mandatoryInputs = ['S3', 'S2', 'S1', 'S0', 'TT7']
+	const mandatoryInputs = ['M3', 'M2', 'M1', 'M0', 'C0']
 	const blockedInputs = [...['R4', 'R5', 'R6', 'R7', 'S4', 'S5', 'S6', 'S7',  'K7', 'K6', 'K5', 'K4', 'K3', 'K2', 'K1', 'K0' ], ...mandatoryInputs]
 	const filteredInputs = PINS.input.filter(p => !blockedInputs.includes(p))
-	const mandatoryOutputs = ['A1', 'D0', 'DX', 'S3', 'S2', 'S1', 'S0']
-	const blockedOutputs = [...['A4', 'A5', 'A6', 'A7', 'S4', 'S5', 'S6', 'S7'], ...mandatoryOutputs]
+	const mandatoryOutputs = ['A2', 'A1', 'A0', 'AM3', 'AM2', 'AM1', 'AM0']
+	const blockedOutputs = [...['A4', 'A5', 'A6', 'A7', 'S4', 'S5', 'S6', 'S7', 'M7', 'M6', 'M5', 'M4', 'M3', 'M2', 'M1', 'M0'], ...mandatoryOutputs]
 	const filteredOutputs = PINS.output.filter(p => !blockedOutputs.includes(p))
 	//
 
