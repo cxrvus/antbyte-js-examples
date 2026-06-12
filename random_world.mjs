@@ -36,7 +36,7 @@ function includeRange(pins, rules) {
 		if (!pin) throw Error("unknown pin:" + code);
 		if (pin.size == 1) return code;
 
-		const indexes = [...Array(max + 1).keys()];
+		const indexes = [...Array(max - min + 1).keys()];
 		return indexes.map(i => code + (i + min).toString(8));
 	})
 }
@@ -54,7 +54,8 @@ function generateAnt(index) {
 		['S', 0, 3],
 		['T', 0, 3],
 		['V', 0, 7],
-		['VC', 0o20, 0o47],
+		['TT', 6, 7],
+		['VC', 0o00, 0o57],
 	]);
 
 	let filteredOutputs = includeRange(OUTPUTS, [
