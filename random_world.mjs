@@ -19,32 +19,36 @@ function generateWorld() {
 	return world
 }
 
+const INPUTS = PINS.filter(pin => pin.io_type == "Input").flatMap(pin => pin.size > 1 ? [...Array(pin.size).keys()].map(i => pin.code + i.toString(8)) : pin.code);
+const OUTPUTS = PINS.filter(pin => pin.io_type == "Output").flatMap(pin => pin.size > 1 ? [...Array(pin.size).keys()].map(i => pin.code + i.toString(8)) : pin.code);
+
 /** @param {number} index @returns {AntByte.Behavior} */
 function generateAnt(index) {
 	// todo: just pass probability object
 	// manual tweaking...
-	const mandatoryInputs = ['AC', 'E3', 'E2', 'E1', 'E0']
-	const blockedInputs = [...['R4', 'R5', 'R6', 'R7', 'E4', 'E5', 'E6', 'E7',  'K7', 'K6', 'K5', 'K4', 'K3', 'K2', 'K1', 'K0' ], ...mandatoryInputs]
-	const filteredInputs = PINS.input.filter(p => !blockedInputs.includes(p))
-	const mandatoryOutputs = ['A1', 'D0', 'DX', 'ES3', 'ES2', 'ES1', 'ES0']
-	const blockedOutputs = [...['A4', 'A5', 'A6', 'A7', 'ES4', 'ES5', 'ES6', 'ES7'], ...mandatoryOutputs]
-	const filteredOutputs = PINS.output.filter(p => !blockedOutputs.includes(p))
-	//
 
-	let inputs = getSubset(filteredInputs, randomInt(4) + 0);
-	let outputs = getSubset(filteredOutputs, randomInt(4) + 4);
+	const mandatoryInputs = ['V', 'S3', 'S2', 'S1', 'S0']
+	const blockedInputs = [...['R4', 'R5', 'R6', 'R7', 'S4', 'S5', 'S6', 'S7',  'K7', 'K6', 'K5', 'K4', 'K3', 'K2', 'K1', 'K0' ], ...mandatoryInputs]
+	const filteredInputs = INPUTS.filter(p => !blockedInputs.includes(p))
+
+	const mandatoryOutputs = ['A1', 'D0', 'H', 'S3', 'S2', 'S1', 'S0']
+	const blockedOutputs = [...['A4', 'A5', 'A6', 'A7', 'ES4', 'S5', 'S6', 'S7'], ...mandatoryOutputs]
+	const filteredOutputs = OUTPUTS.filter(p => !blockedOutputs.includes(p))
+
+	let selected_inputs = getSubset(filteredInputs, randomInt(4) + 0);
+	let selected_outputs = getSubset(filteredOutputs, randomInt(4) + 4);
 
 	// todo: automate
-	inputs = [...inputs, ...mandatoryInputs]
-	outputs = [...outputs, ...mandatoryOutputs]
+	selected_inputs = [...selected_inputs, ...mandatoryInputs]
+	selected_outputs = [...selected_outputs, ...mandatoryOutputs]
 
 	// memory alignment
-	const inputMem = inputs.filter(x => x.startsWith('M'))
-	outputs = outputs.filter(x => !x.startsWith('M') !== inputMem.includes(x))
-		.concat(inputMem.filter(x => !outputs.includes(x)))
+	const inputMem = selected_inputs.filter(x => x.startsWith('M'))
+	selected_outputs = selected_outputs.filter(x => !x.startsWith('M') !== inputMem.includes(x))
+		.concat(inputMem.filter(x => !selected_outputs.includes(x)))
 
-	const inputCount = inputs.length;
-	const outputCount = outputs.length;
+	const inputCount = selected_inputs.length;
+	const outputCount = selected_outputs.length;
 
 	const valueCount = 2 ** inputCount
 	const maxValue = 2 ** outputCount + 1
@@ -53,7 +57,7 @@ function generateAnt(index) {
 
 	for (let i = 0; i < valueCount; i++) logic.push(randomInt(maxValue))
 
-	return { name: index.toString(), outputs, inputs, logic }
+	return { name: index.toString(), outputs: selected_outputs, inputs: selected_inputs, logic }
 }
 
 /** @param {string[]} superSet @param {number} amount @returns {string[]} */
@@ -75,7 +79,7 @@ function getSubset(superSet, amount) {
 
 const world = generateWorld()
 
-world.cfg = { ...size(128), speed: 12, fps: 12, decay: 100, ant_limit: 100 }
+world.cfg = { ...size(64), speed: 12, fps: 12, decay: 100, ant_limit: 100 }
 // world.cfg.keys = "asdfghj"
 
 if (KEEP_FILES) {
