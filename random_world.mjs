@@ -2,7 +2,7 @@
 /** @import * as AntByte from "../antbyte-js/lib" AntByte */
 
 import { writeFileSync } from 'fs'
-import { run, size, newWorld, PINS, randomInt } from "../antbyte-js/lib.mjs"
+import { run, size, newWorld, PINS as ALL_PINS, randomInt } from "../antbyte-js/lib.mjs"
 
 const KEEP_FILES = false;
 
@@ -19,45 +19,76 @@ function generateWorld() {
 	return world
 }
 
-const INPUTS = PINS.filter(pin => pin.io_type == "Input").flatMap(pin => pin.size > 1 ? [...Array(pin.size).keys()].map(i => pin.code + i.toString(8)) : pin.code);
-const OUTPUTS = PINS.filter(pin => pin.io_type == "Output").flatMap(pin => pin.size > 1 ? [...Array(pin.size).keys()].map(i => pin.code + i.toString(8)) : pin.code);
+const EXCLUDE = ['K', 'X', 'RR', 'VA', 'VM']
+
+const PINS = ALL_PINS.filter(pin => !EXCLUDE.includes(pin.code));
+const INPUTS = PINS.filter(pin => pin.io_type === "Input" || pin.io_type === null);
+const OUTPUTS = PINS.filter(pin => pin.io_type === "Output" || pin.io_type === null);
+
+/**
+ * @param {typeof PINS} pins
+ * @param {[String, Number, Number][]} rules
+ */
+function includeRange(pins, rules) {
+	return rules.flatMap(([code, min, max]) => {
+		const pin = pins.find(pin => pin.code == code);
+
+		if (!pin) throw Error("unknown pin:" + code);
+		if (pin.size == 1) return code;
+
+		const indexes = [...Array(max + 1).keys()];
+		return indexes.map(i => code + (i + min).toString(8));
+	})
+}
+
+/** @param {string[]} array @returns {string[]} */
+function distinct(array) {
+	return [...new Set(array)];
+}
 
 /** @param {number} index @returns {AntByte.Behavior} */
 function generateAnt(index) {
-	// todo: just pass probability object
-	// manual tweaking...
+	let filteredInputs = includeRange(INPUTS, [
+		['C', 0, 3],
+		['M', 0, 3],
+		['S', 0, 3],
+		['T', 0, 3],
+		['V', 0, 7],
+		['VC', 0o20, 0o47],
+	]);
 
-	const mandatoryInputs = ['V', 'S3', 'S2', 'S1', 'S0']
-	const blockedInputs = [...['R4', 'R5', 'R6', 'R7', 'S4', 'S5', 'S6', 'S7',  'K7', 'K6', 'K5', 'K4', 'K3', 'K2', 'K1', 'K0' ], ...mandatoryInputs]
-	const filteredInputs = INPUTS.filter(p => !blockedInputs.includes(p))
+	let filteredOutputs = includeRange(OUTPUTS, [
+		['C', 0, 3],
+		['M', 0, 3],
+		['S', 0, 3],
+		['D', 0, 2],
+		['A', 0, 3],
+		['AM', 0, 3],
+		['W', 0, 1],
+	]);
 
-	const mandatoryOutputs = ['A1', 'D0', 'H', 'S3', 'S2', 'S1', 'S0']
-	const blockedOutputs = [...['A4', 'A5', 'A6', 'A7', 'ES4', 'S5', 'S6', 'S7'], ...mandatoryOutputs]
-	const filteredOutputs = OUTPUTS.filter(p => !blockedOutputs.includes(p))
+	let allInputs = includeRange(INPUTS, INPUTS.map(pin => [pin.code, 0, pin.size - 1]));
+	let allOutputs = includeRange(OUTPUTS, OUTPUTS.map(pin => [pin.code, 0, pin.size - 1]));
 
-	let selected_inputs = getSubset(filteredInputs, randomInt(4) + 0);
-	let selected_outputs = getSubset(filteredOutputs, randomInt(4) + 4);
+	let randomInputs = getSubset(allInputs, randomInt(4));
+	let randomOutputs = getSubset(allOutputs, randomInt(8));
 
-	// todo: automate
-	selected_inputs = [...selected_inputs, ...mandatoryInputs]
-	selected_outputs = [...selected_outputs, ...mandatoryOutputs]
+	let selectedInputs = distinct(getSubset(filteredInputs, randomInt(4) + 4).concat(randomInputs));
+	let selectedOutputs = distinct(getSubset(filteredOutputs, randomInt(4) + 8).concat(randomOutputs));
 
-	// memory alignment
-	const inputMem = selected_inputs.filter(x => x.startsWith('M'))
-	selected_outputs = selected_outputs.filter(x => !x.startsWith('M') !== inputMem.includes(x))
-		.concat(inputMem.filter(x => !selected_outputs.includes(x)))
+	if (selectedInputs.length > 8) selectedInputs = selectedInputs.slice(0, 8);
 
-	const inputCount = selected_inputs.length;
-	const outputCount = selected_outputs.length;
+	const inputCount = selectedInputs.length;
+	const outputCount = selectedOutputs.length;
 
-	const valueCount = 2 ** inputCount
-	const maxValue = 2 ** outputCount + 1
+	const valueCount = 2 ** inputCount;
+	const maxValue = 2 ** outputCount + 1;
 
-	const logic = []
+	const logic = [];
 
-	for (let i = 0; i < valueCount; i++) logic.push(randomInt(maxValue))
+	for (let i = 0; i < valueCount; i++) logic.push(randomInt(maxValue));
 
-	return { name: index.toString(), outputs: selected_outputs, inputs: selected_inputs, logic }
+	return { name: index.toString(), outputs: selectedOutputs, inputs: selectedInputs, logic };
 }
 
 /** @param {string[]} superSet @param {number} amount @returns {string[]} */
@@ -79,7 +110,8 @@ function getSubset(superSet, amount) {
 
 const world = generateWorld()
 
-world.cfg = { ...size(64), speed: 12, fps: 12, decay: 100, ant_limit: 100 }
+world.cfg = { height: 128, width: 255, speed: 12, fps: 12, decay: 64 }
+world.cfg.border = 'collide';
 // world.cfg.keys = "asdfghj"
 
 if (KEEP_FILES) {
