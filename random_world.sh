@@ -22,7 +22,7 @@ done
 
 random_gif_name() {
 	local suffix
-	suffix=$(tr -dc 'a-z0-9' </dev/urandom | head -c 8)
+	suffix=$(date -u +"%Y-%m-%d-%H-%M-%S")
 	echo "generated/random_${suffix}.gif"
 }
 
