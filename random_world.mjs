@@ -19,7 +19,7 @@ function generateWorld() {
 	return world
 }
 
-const EXCLUDE = ['K', 'X', 'RR', 'VA', 'VM']
+const EXCLUDE = ['K', 'X', 'RR', 'VM']
 
 const PINS = ALL_PINS.filter(pin => !EXCLUDE.includes(pin.code));
 const INPUTS = PINS.filter(pin => pin.io_type === "Input" || pin.io_type === null);
@@ -56,6 +56,7 @@ function generateAnt(index) {
 		['V', 0, 7],
 		['TT', 6, 7],
 		['VC', 0o00, 0o57],
+		['VA', 0o50, 0o77],
 	]);
 
 	let filteredOutputs = includeRange(OUTPUTS, [
