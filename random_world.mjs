@@ -64,10 +64,13 @@ function generateAnt(index) {
 		['M', 0, 3],
 		['S', 0, 3],
 		['D', 0, 2],
+		['D', 0, 2],
+		['D', 0, 2],
+		['D', 0, 2],
 		['A', 0, 3],
 		['AM', 0, 3],
 		['W', 0, 1],
-		['AA', 0, 0],
+		['AA', 0, 1],
 	]);
 
 	let allInputs = includeRange(INPUTS, INPUTS.map(pin => [pin.code, 0, pin.size - 1]));
@@ -76,8 +79,8 @@ function generateAnt(index) {
 	let randomInputs = getSubset(allInputs, randomInt(4));
 	let randomOutputs = getSubset(allOutputs, randomInt(8));
 
-	let selectedInputs = distinct(getSubset(filteredInputs, randomInt(4) + 4).concat(randomInputs));
-	let selectedOutputs = distinct(getSubset(filteredOutputs, randomInt(4) + 8).concat(randomOutputs));
+	let selectedInputs = distinct(getSubset(filteredInputs, 8).concat(randomInputs));
+	let selectedOutputs = distinct(getSubset(filteredOutputs, 16).concat(randomOutputs));
 
 	if (selectedInputs.length > 8) selectedInputs = selectedInputs.slice(0, 8);
 
@@ -110,8 +113,8 @@ function getSubset(superSet, amount) {
 
 const world = generateWorld()
 
-world.cfg = { height: 128, width: 255, speed: 12, fps: 12, decay: 64, layers: 4 }
-world.cfg.border = { 0: 'collide' };
+world.cfg = { height: 128, width: 255, speed: 12, fps: 12, decay: 64, layers: 8 }
+world.cfg.border = { 0: 'collide', 1: 'wrap', 2: 'despawn' };
 // world.cfg.keys = "asdfghj"
 
 if (KEEP_FILES) {
