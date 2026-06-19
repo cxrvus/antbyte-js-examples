@@ -67,6 +67,7 @@ function generateAnt(index) {
 		['A', 0, 3],
 		['AM', 0, 3],
 		['W', 0, 1],
+		['AA', 0, 0],
 	]);
 
 	let allInputs = includeRange(INPUTS, INPUTS.map(pin => [pin.code, 0, pin.size - 1]));
@@ -109,8 +110,8 @@ function getSubset(superSet, amount) {
 
 const world = generateWorld()
 
-world.cfg = { height: 128, width: 255, speed: 12, fps: 12, decay: 64 }
-world.cfg.border = 'collide';
+world.cfg = { height: 128, width: 255, speed: 12, fps: 12, decay: 64, layers: 4 }
+world.cfg.border = { 0: 'collide' };
 // world.cfg.keys = "asdfghj"
 
 if (KEEP_FILES) {
