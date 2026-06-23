@@ -5,7 +5,7 @@ child_pid=""
 gif_enabled=0
 
 world_script="./random_world.mjs"
-world_settings_normal="speed=4;fps=12;dur=35"
+world_settings_normal="size=256;speed=4;fps=12;dur=35"
 world_settings_gif="size=256;speed=8;fps=24;dur=25"
 
 for arg in "$@"; do
@@ -33,7 +33,7 @@ run_antbyte() {
 		echo "Creating GIF: $gif_name"
 		antbyte --gif "$gif_name" "$world_script" -Tc "$world_settings_gif" &
 	else
-		antbyte "$world_script" -Tc "$world_settings_normal" &
+		antbyte-gui "$world_script" -Tc "$world_settings_normal" &
 	fi
 	child_pid=$!
 }

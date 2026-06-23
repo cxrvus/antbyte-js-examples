@@ -113,7 +113,7 @@ function getSubset(superSet, amount) {
 
 const world = generateWorld()
 
-world.cfg = { height: 128, width: 255, speed: 16, fps: 12, decay: 64, layers: 4 }
+world.cfg = { height: 128, width: 128, speed: 16, fps: 12, decay: 64, layers: 4 }
 world.cfg.border = { 0: 'collide', 1: 'wrap', 2: 'despawn' };
 // world.cfg.keys = "asdfghj"
 
