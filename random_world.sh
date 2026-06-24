@@ -5,7 +5,7 @@ child_pid=""
 gif_enabled=0
 
 world_script="./random_world.mjs"
-world_settings_normal="speed=4;fps=12;dur=35"
+world_settings_normal="speed=4;fps=12"
 world_settings_gif="size=256;speed=8;fps=24;dur=25"
 
 for arg in "$@"; do
