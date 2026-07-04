@@ -49,18 +49,19 @@ function distinct(array) {
 /** @param {number} index @returns {AntByte.Behavior} */
 function generateAnt(index) {
 	let filteredInputs = includeRange(INPUTS, [
-		['K', 0, 3],
-		['C', 0, 3],
-		['S', 0, 3],
-		['T', 4, 7],
-		['V', 0, 7],
+		['K', 0, 7],
+		// ['C', 0, 3],
+		// ['S', 0, 3],
+		// ['T', 4, 7],
+		// ['V', 0, 7],
 	]);
 
 	let filteredOutputs = includeRange(OUTPUTS, [
 		['C', 0, 3],
-		['M', 0, 3],
-		['S', 0, 3],
-		['D', 0, 2],
+		// ['M', 0, 3],
+		// ['S', 0, 3],
+		['D', 0, 0],
+		['D', 2, 2],
 		['A', 0, 3],
 		['W', 0, 1],
 		['AA', 0, 0],
@@ -71,10 +72,10 @@ function generateAnt(index) {
 	let allInputs = includeRange(INPUTS, INPUTS.map(pin => [pin.code, 0, pin.size - 1]));
 	let allOutputs = includeRange(OUTPUTS, OUTPUTS.map(pin => [pin.code, 0, pin.size - 1]));
 
-	let randomInputs = getSubset(allInputs, randomInt(4));
+	let randomInputs = getSubset(allInputs, randomInt(1));
 	let randomOutputs = getSubset(allOutputs, randomInt(8));
 
-	let selectedInputs = distinct(getSubset(filteredInputs, 8).concat(randomInputs));
+	let selectedInputs = distinct(getSubset(filteredInputs, 7).concat(randomInputs));
 	let selectedOutputs = distinct(getSubset(filteredOutputs, 16).concat(randomOutputs));
 
 	if (selectedInputs.length > 8) selectedInputs = selectedInputs.slice(0, 8);
@@ -108,7 +109,7 @@ function getSubset(superSet, amount) {
 
 const world = generateWorld()
 
-world.cfg = { height: 128, width: 255, speed: 16, fps: 12, keys: "asdf", decay: 64, layers: 3, fg: 'layers', looping: true }
+world.cfg = { height: 128, width: 255, speed: 16, fps: 12, keys: "asdfghjk", decay: 64, layers: 3, fg: 'layers', looping: true }
 world.cfg.border = { 0: 'collide', 1: 'wrap', 2: 'despawn' };
 // world.cfg.keys = "asdfghj"
 
